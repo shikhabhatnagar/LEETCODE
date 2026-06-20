@@ -1,7 +1,10 @@
-SELECT DISTINCT l1.num AS ConsecutiveNums
-FROM Logs l1
-JOIN Logs l2 ON l1.id = l2.id - 1
-JOIN Logs l3 ON l1.id = l3.id - 2
-WHERE l1.num = l2.num
-  AND l2.num = l3.num;
-  
+# Write your MySQL query statement
+WITH CTE AS (
+    SELECT num,
+           LEAD(num, 1) OVER (ORDER BY id) AS next_num,
+           LEAD(num, 2) OVER (ORDER BY id) AS next_next_num
+    FROM Logs
+)
+SELECT DISTINCT num AS ConsecutiveNums
+FROM CTE
+WHERE num = next_num AND num = next_next_num;
